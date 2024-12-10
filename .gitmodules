@@ -1,0 +1,3 @@
+[submodule "modrinth.py"]
+	path = modrinth.py
+	url = git@github.com:betapictoris/modrinth.py.git

@@ -12,3 +12,5 @@ ops.json
 server.properties
 usercache.json
 whitelist.json
+.env/
+fabric-versions.json
