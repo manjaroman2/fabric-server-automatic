@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# --------- START OF EDIT ZONE ---------------
+
+MODS="asguhoserver" # Space seperated list of mods/modpacks by slug (i.e. https://modrinth.com/modpack/{slug}). If you create version conflicts, that's on you
+                    # You could try this for performance "lithium ferrite-core modernfix memoryleakfix krypton debugify lazydfu c2me-fabric noisium vmp-fabric fastload"
+
+FRACTION_OF_RAM_USAGE=2 # 2 means half, 3 means third and so on...
+
+# ---------- END OF EDIT ZONE ----------------
+#
+# ----------- NO EDIT ZONE --------------
+# if you edit here, you're on your own
+
 FABRIC_VERSIONS_URL="https://meta.fabricmc.net/v2/versions/"
 
 if ! [ -x "$(command -v python3.12)" ]; then
@@ -20,10 +32,6 @@ else
     echo "patch does not apply to modrinth.py"
 fi
 rm modrinth.py.patch && cd ../..
-# if git apply --check "modrinth.py.patch"; then
-#     echo "patching modrinth.py"
-#     cd modrinth.py/modrinth && cp ../../modrinth.py.patch . && git apply modrinth.py.patch && rm modrinth.py.patch && cd ..
-# fi
 
 MINECRAFT_VERSION="$1"
 echo "minecraft version: $MINECRAFT_VERSION"
@@ -31,9 +39,6 @@ echo "minecraft version: $MINECRAFT_VERSION"
 if [ ! -d ".env/" ]; then
     echo "creating python3.12 virtual enviroment at $PWD/.env/"
     python3.12 -m venv .env/
-    # echo "PATH=\"$PWD/modrinth.py:\$PATH\"" >>.env/bin/activate
-    # echo "export PATH" >>.env/bin/activate
-    # echo "hash -r 2> /dev/null" >>.env/bin/activate
 fi
 
 source .env/bin/activate
@@ -81,7 +86,7 @@ fi
 
 ram_in_gb="$(awk '/MemFree/ { printf "%.3f \n", $2/1024/1024 }' /proc/meminfo)"
 
-xmx="$(bc -l <<<"${ram_in_gb}*1000/2")"
+xmx="$(bc -l <<<"${ram_in_gb}*1000/${FRACTION_OF_RAM_USAGE}")"
 xmx=${xmx%.*}
 jargs="-Xmx${xmx}M"
 
@@ -90,8 +95,7 @@ echo "eula=true" >eula.txt
 echo "java $jargs -jar $SERVER_JAR nogui" >start-server.sh
 
 echo "checking mods compatiblity with version $MINECRAFT_VERSION"
-python modrinth-api.py $1 asguhoserver
-# lithium ferrite-core modernfix memoryleakfix krypton debugify lazydfu c2me-fabric noisium vmp-fabric fastload
+python modrinth-api.py $1 $MODS
 retVal=$?
 if [ $retVal -ne 0 ]; then
     echo -e "\e[31mError\e[0m"
@@ -99,7 +103,4 @@ if [ $retVal -ne 0 ]; then
 fi
 echo "  > No issues"
 echo -e "Use \e[32m./start-server.sh\e[0m to start the server"
-# "\e[32mGreen Text\e[0m"
 chmod +x start-server.sh
-# echo $ram_in_gb
-# echo $((ram_in_gb*500))
