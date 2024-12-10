@@ -14,6 +14,6 @@ usercache.json
 whitelist.json
 .env/
 fabric-versions.json
-cache
-config
+cache/
+config/
 modrinth.py/

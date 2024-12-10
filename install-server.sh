@@ -2,8 +2,9 @@
 
 # --------- START OF EDIT ZONE ---------------
 
-MODS="asguhoserver" # Space seperated list of mods/modpacks by slug (i.e. https://modrinth.com/modpack/{slug}). If you create version conflicts, that's on you
-                    # You could try this for performance "lithium ferrite-core modernfix memoryleakfix krypton debugify lazydfu c2me-fabric noisium vmp-fabric fastload"
+MODS="lithium ferrite-core modernfix krypton debugify c2me-fabric noisium vmp-fabric no-chat-reports servercore"
+# MODS="asguhoserver" # Space seperated list of mods/modpacks by slug (i.e. https://modrinth.com/modpack/{slug}). If you create version conflicts, that's on you
+                    # You could try this for performance in 1.21.1 "lithium ferrite-core modernfix krypton debugify c2me-fabric noisium vmp-fabric no-chat-reports servercore"
 
 FRACTION_OF_RAM_USAGE=2 # 2 means half, 3 means third and so on...
 

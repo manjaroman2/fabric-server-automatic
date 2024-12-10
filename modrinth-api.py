@@ -42,8 +42,13 @@ from requests import get as r_get
 # print(json.dumps(r_get(url).json()[0], indent=4))
 def get_jars_with_deps(proj_id, version_id):
     url = f"https://api.modrinth.com/v2/project/{proj_id}/version/{version_id}"
-    v = r_get(url).json()
-    yield from ((x["url"], x["hashes"]["sha512"]) for x in v["files"])
+    r = r_get(url)
+    try:
+        v = r.json()
+    except json.JSONDecodeError:
+        print(r, url)
+        exit(1)
+    yield from ((x["url"], x["hashes"]["sha512"]) for x in v["files"] if x["primary"] == True)
     for dep in v["dependencies"]:
         if dep["dependency_type"] == "optional" or dep["version_id"] == None:
             continue
@@ -71,11 +76,18 @@ for slug in slugs:
     v = r_get(url).json()[0]
 
     req = []
-    print("  > getting dependencies")
+    print(f"  > getting dependencies for {slug}")
     for dep in v["dependencies"]:
+        if dep["dependency_type"] == "optional" or dep["version_id"] == None:
+            continue
         for x in get_jars_with_deps(dep["project_id"], dep["version_id"]):
             req.append(x)
 
+    # print(v["files"])
+    for x in v["files"]:
+        if x["primary"] == True:
+            req.append((x["url"], x["hashes"]["sha512"]))
+            break
     for url, sha512 in req:
         fn = urllib.parse.unquote_plus(url.split("/")[-1])
         print(f"    > {url} -> {fn}")
