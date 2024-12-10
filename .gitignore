@@ -16,3 +16,5 @@ whitelist.json
 fabric-versions.json
 cache
 config
+
+modrinth.py/
