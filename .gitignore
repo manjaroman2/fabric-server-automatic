@@ -16,3 +16,4 @@ whitelist.json
 fabric-versions.json
 cache/
 config/
+start-server.sh

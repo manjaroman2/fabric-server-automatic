@@ -70,6 +70,8 @@ def clear_directory(directory_path):
 
 
 print(f"clearing mods directory {mods_path}")
+if not mods_path.exists():
+    mods_path.mkdir()
 clear_directory(mods_path)
 for slug in slugs:
     url = f'https://api.modrinth.com/v2/project/{slug}/version?game_versions=["{mc_version}"]'
