@@ -1,6 +1,6 @@
 requires: 
 - Bash 
-- Python 3.12
+- Python 3.8+
 
 use:
 - open install-server.sh and set any modpacks/mods you like 
